@@ -6,11 +6,15 @@ authors = [
     {name = "VitaminB16",email = "artemiy.nosov@gmail.com"}
 ]
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.12,<4.0"
 dependencies = [
     "gcp-pal[bigquery,firestore] (>=1.0.41,<2.0.0)",
     "requests (>=2.32.3,<3.0.0)",
-    "pandas (>=2.2.3,<3.0.0)"
+    "pandas (>=2.2.3,<3.0.0)",
+    "bs4 (>=0.0.2,<0.0.3)",
+    "lxml (>=5.4.0,<6.0.0)",
+    "python-jobspy (>=1.1.80,<2.0.0)",
+    "python-dotenv (>=1.1.0,<2.0.0)"
 ]
 
 
