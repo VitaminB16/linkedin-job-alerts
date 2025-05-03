@@ -7,3 +7,5 @@ This is a mobile push-notification service:
 - Scrapes LinkedIn job postings via **JobSpy API** library
 - Keeps track of the last seen job postings via **Firestore**
 - Sends a push notification to a mobile device via **Pushover API** when a new job posting is found
+
+*This project was written in 3 hours.*
