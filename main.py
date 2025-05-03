@@ -69,7 +69,7 @@ def send_notification(new_jobs, search_term=""):
             return
         time.sleep(5)
     print("Failed to send notification.")
-    return
+    return True
 
 
 def main(request=None):
@@ -120,6 +120,8 @@ def main(request=None):
 
         print(f"Writing {len(new_jobs)} current jobs to Firestore")
         Firestore(current_jobs_location).write(jobs_company_title_pairs)
+
+    return {"status": "success"}
 
 
 if __name__ == "__main__":
