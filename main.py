@@ -105,9 +105,10 @@ def main(request=None):
         )
 
         jobs_company_title_pairs = set(jobs_company_title_pairs)
+        combined_jobs_title_pairs = jobs_company_title_pairs.union(existing_jobs)
 
-        print(f"Writing {len(jobs_company_title_pairs)} current jobs to Firestore")
-        Firestore(current_jobs_location).write(jobs_company_title_pairs)
+        print(f"Writing {len(combined_jobs_title_pairs)} current jobs to Firestore")
+        Firestore(current_jobs_location).write(combined_jobs_title_pairs)
         existing_jobs = set(existing_jobs)
 
         new_jobs = jobs_company_title_pairs - existing_jobs
