@@ -105,6 +105,9 @@ def main(request=None):
         )
 
         jobs_company_title_pairs = set(jobs_company_title_pairs)
+
+        print(f"Writing {len(new_jobs)} current jobs to Firestore")
+        Firestore(current_jobs_location).write(jobs_company_title_pairs)
         existing_jobs = set(existing_jobs)
 
         new_jobs = jobs_company_title_pairs - existing_jobs
@@ -113,13 +116,13 @@ def main(request=None):
             .drop(columns=["company_title_pair"])
             .reset_index(drop=True)
         )
-        print(f"New jobs:")
+        if new_jobs.empty:
+            print("No new jobs found.")
+            continue
+        print(f"Found {len(new_jobs)} new jobs:")
         print(new_jobs)
 
         send_notification(new_jobs, search_term=search_term)
-
-        print(f"Writing {len(new_jobs)} current jobs to Firestore")
-        Firestore(current_jobs_location).write(jobs_company_title_pairs)
 
     return {"status": "success"}
 
