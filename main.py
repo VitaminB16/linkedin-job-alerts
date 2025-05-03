@@ -54,7 +54,7 @@ def send_notification(new_jobs, search_term=""):
         "user": os.getenv("PUSHOVER_USER_KEY", None),
         "title": f"New Job Alert ({search_term})",
         "message": message,
-        "priority": 1,
+        "priority": 0,
     }
     response = requests.post(url, data=data)
     times_to_retry = 3
@@ -72,7 +72,7 @@ def send_notification(new_jobs, search_term=""):
     return
 
 
-def main():
+def main(request=None):
     search_terms = get_search_terms()
 
     for search_term in search_terms:
@@ -93,6 +93,9 @@ def main():
             results_wanted=1000,
             hours_old=3,
         ).loc[:, ["company", "title", "job_url"]]
+        linkedin_jobs = linkedin_jobs[
+            linkedin_jobs["title"].str.lower().str.contains("product manager")
+        ]
 
         jobs_company_title_pairs = linkedin_jobs.apply(
             lambda x: f"{x['company'].lower()}--{x['title'].lower()}", axis=1
