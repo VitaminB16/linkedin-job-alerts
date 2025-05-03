@@ -8,6 +8,9 @@ authors = [
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "gcp-pal[bigquery,firestore] (>=1.0.41,<2.0.0)",
+    "requests (>=2.32.3,<3.0.0)",
+    "pandas (>=2.2.3,<3.0.0)"
 ]
 
 
