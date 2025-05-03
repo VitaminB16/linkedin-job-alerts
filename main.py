@@ -106,7 +106,7 @@ def main(request=None):
 
         jobs_company_title_pairs = set(jobs_company_title_pairs)
 
-        print(f"Writing {len(new_jobs)} current jobs to Firestore")
+        print(f"Writing {len(jobs_company_title_pairs)} current jobs to Firestore")
         Firestore(current_jobs_location).write(jobs_company_title_pairs)
         existing_jobs = set(existing_jobs)
 
