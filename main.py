@@ -94,7 +94,9 @@ def main(request=None):
             hours_old=3,
         ).loc[:, ["company", "title", "job_url"]]
         linkedin_jobs = linkedin_jobs[
-            linkedin_jobs["title"].str.lower().str.contains("product manager")
+            linkedin_jobs["title"]
+            .str.lower()
+            .str.contains(search_term.replace("_", " "))
         ]
 
         jobs_company_title_pairs = linkedin_jobs.apply(
