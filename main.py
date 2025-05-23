@@ -93,11 +93,17 @@ def main(request=None):
             results_wanted=1000,
             hours_old=3,
         ).loc[:, ["company", "title", "job_url"]]
+        if linkedin_jobs.empty:
+            print(f"No jobs found for search term: {search_term}")
+            continue
         linkedin_jobs = linkedin_jobs[
             linkedin_jobs["title"]
             .str.lower()
             .str.contains(search_term.replace("_", " "))
         ]
+        if linkedin_jobs.empty:
+            print(f"No jobs found for search term: {search_term} after filtering")
+            continue
 
         jobs_company_title_pairs = linkedin_jobs.apply(
             lambda x: f"{x['company'].lower()}--{x['title'].lower()}", axis=1
