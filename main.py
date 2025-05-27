@@ -52,35 +52,41 @@ def send_notification(new_jobs, search_term=""):
     display_term = search_term.replace("_", " ").title()
     url = "https://api.pushover.net/1/messages.json"
     message = construct_message(new_jobs)
-    device_name = CONFIG.get(search_term.lower(), {}).get("device", None)
-    print(f"Device name for {display_term}: {device_name}")
-    data = {
-        "token": os.getenv("PUSHOVER_API_TOKEN", None),
-        "user": os.getenv("PUSHOVER_USER_KEY", None),
-        "title": f"New Job Alert ({display_term})",
-        "message": message,
-        "priority": 0,
-        "device": device_name,
-    }
-    response = requests.post(url, data=data)
-    times_to_retry = 3
-    while times_to_retry > 0:
-        if response.status_code != 200:
-            print(
-                f"Failed to send notification. Retrying {times_to_retry} more times. CODE: {response.status_code} {response.text}"
-            )
-            times_to_retry -= 1
+    device_names = CONFIG.get(search_term.lower(), {}).get("device", None)
+
+    if not isinstance(device_names, list):
+        device_names = [device_names]
+
+    for device_name in device_names:
+        print(f"Device name for {display_term}: {device_name}")
+        data = {
+            "token": os.getenv("PUSHOVER_API_TOKEN", None),
+            "user": os.getenv("PUSHOVER_USER_KEY", None),
+            "title": f"New Job Alert ({display_term})",
+            "message": message,
+            "priority": 0,
+            "device": device_name,
+        }
+        response = requests.post(url, data=data)
+        times_to_retry = 3
+        while times_to_retry > 0:
+            if response.status_code != 200:
+                print(
+                    f"Failed to send notification. Retrying {times_to_retry} more times. CODE: {response.status_code} {response.text}"
+                )
+                times_to_retry -= 1
+            else:
+                print("Notification sent.")
+                break
+            time.sleep(5)
         else:
-            print("Notification sent.")
-            return
-        time.sleep(5)
-    print("Failed to send notification.")
+            print("Failed to send notification.")
     return True
 
 
 def main(request=None):
     search_terms = get_search_terms()
-
+    search_terms = ["product_manager"]
     for search_term in search_terms:
         print(f"Processing search term: '{search_term}'")
 
