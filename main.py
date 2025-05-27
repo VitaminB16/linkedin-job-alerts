@@ -86,7 +86,7 @@ def send_notification(new_jobs, search_term=""):
 
 def main(request=None):
     search_terms = get_search_terms()
-    search_terms = ["product_manager"]
+
     for search_term in search_terms:
         print(f"Processing search term: '{search_term}'")
 
