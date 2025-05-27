@@ -12,6 +12,9 @@ from jobspy import scrape_jobs
 
 CURRENT_TIME = datetime.now()
 FIRESTORE_SEARCH_TERMS_LOCATION = f"metadata/job_notifications/search_terms"
+FIRESTORE_CONFIG_LOCATION = "metadata/job_notifications/config"
+
+CONFIG = Firestore(FIRESTORE_CONFIG_LOCATION).read(allow_empty=True)["config"]
 
 
 def get_search_terms():
@@ -46,15 +49,18 @@ def send_notification(new_jobs, search_term=""):
     """
     Send a notification to an iPhone using Pushover.
     """
-    search_term = search_term.replace("_", " ").title()
+    display_term = search_term.replace("_", " ").title()
     url = "https://api.pushover.net/1/messages.json"
     message = construct_message(new_jobs)
+    device_name = CONFIG.get(search_term.lower(), {}).get("device", None)
+    print(f"Device name for {display_term}: {device_name}")
     data = {
         "token": os.getenv("PUSHOVER_API_TOKEN", None),
         "user": os.getenv("PUSHOVER_USER_KEY", None),
-        "title": f"New Job Alert ({search_term})",
+        "title": f"New Job Alert ({display_term})",
         "message": message,
         "priority": 0,
+        "device": device_name,
     }
     response = requests.post(url, data=data)
     times_to_retry = 3
@@ -96,11 +102,12 @@ def main(request=None):
         if linkedin_jobs.empty:
             print(f"No jobs found for search term: {search_term}")
             continue
-        linkedin_jobs = linkedin_jobs[
-            linkedin_jobs["title"]
-            .str.lower()
-            .str.contains(search_term.replace("_", " "))
-        ]
+        if search_term == "product_manager":
+            linkedin_jobs = linkedin_jobs[
+                linkedin_jobs["title"]
+                .str.lower()
+                .str.contains(search_term.replace("_", " "))
+            ]
         if linkedin_jobs.empty:
             print(f"No jobs found for search term: {search_term} after filtering")
             continue
